@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ДНК — Культурний журнал</title>
+  <style>
+    @font-face {
+      font-family: 'Kharkiv Tone';
+      src: url('fonts/KharkivTone.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Mariupol';
+      src: url('fonts/Mariupol-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Vesna';
+      src: url('fonts/Vesna.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    /* ─── ТОКЕНИ ───────────────────────────────────────── */
+    :root {
+      --blue:   #335D89;
+      --dark:   #3B3F52;
+      --bg:     #F6F6F6;
+      --white:  #FFFFFF;
+      --muted:  #7A8090;
+      --line:   2px;
+      --font-heading: 'Kharkiv Tone', Arial, sans-serif;
+      --font-body:    'Mariupol', Arial, sans-serif;
+      --font-rubric:  'Vesna', Georgia, serif;
+    }
+
+    /* ─── RESET ────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--dark);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; height: auto; }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ─── РОЗДІЛЮВАЧ ───────────────────────────────────── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 48px 0;
+    }
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: var(--line);
+      background: var(--blue);
+    }
+    .divider-star {
+      color: var(--blue);
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    /* ─── НАВІГАЦІЯ ────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: var(--line) solid var(--blue);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo-img {
+      height: 36px;
+      width: auto;
+    }
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--font-body);
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--dark);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--blue); }
+
+    .burger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .burger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--blue);
+    }
+    .mobile-menu {
+      display: none;
+      flex-direction: column;
+      border-top: var(--line) solid var(--blue);
+      background: var(--bg);
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      padding: 16px 24px;
+      font-size: 14px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--dark);
+      border-bottom: 1px solid rgba(51,93,137,0.15);
+      transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--blue); }
+
+    /* ─── HERO ─────────────────────────────────────────── */
+    .hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding-top: 64px;
+      background-image: url('images/hero-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(246, 246, 246, 0.3);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      padding: 48px 0 64px;
+    }
+    .hero-rubric {
+      font-family: var(--font-rubric);
+      font-size: 16px;
+      color: var(--blue);
+      margin-bottom: 20px;
+    }
+    .hero-logo {
+      height: 260px;
+      width: auto;
+      max-width: 90%;
+      margin-bottom: 28px;
+    }
+    .hero-desc {
+      max-width: 480px;
+      font-size: 15px;
+      color: var(--dark);
+      line-height: 1.75;
+      margin-bottom: 40px;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .btn-filled {
+      display: inline-flex;
+      align-items: center;
+      padding: 13px 28px;
+      background: var(--blue);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      border: var(--line) solid var(--blue);
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-filled:hover { background: transparent; color: var(--blue); }
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      padding: 13px 28px;
+      background: transparent;
+      color: var(--blue);
+      font-family: var(--font-body);
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      border: var(--line) solid var(--blue);
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-outline:hover { background: var(--blue); color: var(--white); }
+
+    /* ─── СЕКЦІЇ ───────────────────────────────────────── */
+    .section { padding: 64px 0; }
+    .section-num {
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      color: var(--blue);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: clamp(26px, 4vw, 44px);
+      color: var(--dark);
+      font-weight: 400;
+      margin-bottom: 40px;
+    }
+
+    /* ─── РУБРИКИ ──────────────────────────────────────── */
+    .directions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--line);
+      background: var(--blue);
+    }
+    .direction-item {
+      background: var(--bg);
+      padding: 32px 24px;
+      transition: background 0.2s;
+    }
+    .direction-item:hover { background: var(--white); }
+    .direction-num {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--blue);
+      margin-bottom: 12px;
+    }
+    .direction-name {
+      font-family: var(--font-heading);
+      font-size: 26px;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+    .direction-rubric {
+      font-family: var(--font-rubric);
+      font-size: 13px;
+      color: var(--blue);
+      margin-bottom: 10px;
+    }
+    .direction-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ─── ПРО НАС ──────────────────────────────────────── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+    .about-title {
+      font-family: var(--font-heading);
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 400;
+      line-height: 1.1;
+      color: var(--dark);
+      margin-bottom: 24px;
+    }
+    .about-title .accent { color: var(--blue); }
+    .about-text {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      background: var(--blue);
+    }
+    .stat-box {
+      background: var(--bg);
+      padding: 28px 24px;
+    }
+    .stat-num {
+      font-family: var(--font-heading);
+      font-size: 40px;
+      color: var(--blue);
+      margin-bottom: 6px;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* ─── ЗАСНОВНИЦІ ───────────────────────────────────── */
+    .founders-title {
+      font-family: var(--font-heading);
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 400;
+      color: var(--dark);
+      margin: 48px 0 24px;
+    }
+    .founders-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--blue);
+    }
+    .founder-card {
+      background: var(--bg);
+      display: block;
+      transition: background 0.2s;
+    }
+    .founder-card:hover { background: var(--white); }
+    .founder-photo img {
+      width: 100%;
+      height: 340px;
+      object-fit: cover;
+      object-position: center 15%;
+      display: block;
+    }
+    .founder-info {
+      padding: 20px 24px 28px;
+    }
+    .founder-name {
+      font-family: var(--font-heading);
+      font-size: 22px;
+      color: var(--blue);
+      margin-bottom: 4px;
+    }
+    .founder-role {
+      font-family: var(--font-rubric);
+      font-size: 15px;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+    .founder-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ─── INSTAGRAM ────────────────────────────────────── */
+    .insta-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .instagram-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--line);
+      background: var(--blue);
+    }
+    .instagram-grid a {
+      display: block;
+      aspect-ratio: 1;
+      overflow: hidden;
+    }
+    .instagram-grid a img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.2s;
+    }
+    .instagram-grid a:hover img { opacity: 0.85; }
+
+    /* ─── КОНТАКТ ──────────────────────────────────────── */
+    .contact-section {
+      padding: 72px 0;
+      background: var(--blue);
+    }
+    .contact-inner { text-align: center; }
+    .contact-title {
+      font-family: var(--font-heading);
+      font-size: clamp(32px, 5vw, 60px);
+      font-weight: 400;
+      line-height: 1.05;
+      margin-bottom: 16px;
+      color: var(--white);
+    }
+    .contact-rubric {
+      font-family: var(--font-rubric);
+      font-size: 17px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 40px;
+    }
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border: var(--line) solid rgba(255,255,255,0.5);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .contact-btn:hover {
+      border-color: var(--white);
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* ─── ФУТЕР ────────────────────────────────────────── */
+    .footer {
+      background: var(--dark);
+      padding: 28px 0;
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footer-logo-img {
+      height: 32px;
+      width: auto;
+    }
+    .footer-copy {
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.05em;
+    }
+
+    /* ─── ПЛАНШЕТ ──────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .directions-grid { grid-template-columns: repeat(2, 1fr); }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .founders-grid { grid-template-columns: repeat(2, 1fr); }
+      .instagram-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ─── МОБІЛЬНИЙ ────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .burger { display: flex; }
+
+      .hero-content { padding: 32px 0 48px; }
+      .hero-logo { height: 160px; }
+      .hero-desc { font-size: 14px; }
+      .hero-actions { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .btn-filled, .btn-outline { width: 100%; justify-content: center; padding: 14px 20px; }
+
+      .section { padding: 48px 0; }
+      .divider { margin: 32px 0; }
+
+      .directions-grid { grid-template-columns: 1fr; }
+      .direction-item { padding: 24px 20px; }
+
+      .about-grid { grid-template-columns: 1fr; gap: 32px; }
+      .about-stats { grid-template-columns: 1fr 1fr; }
+      .stat-box { padding: 20px 16px; }
+      .stat-num { font-size: 32px; }
+
+      .founders-grid { grid-template-columns: 1fr; }
+      .founder-photo img { height: 280px; }
+
+      .instagram-grid { grid-template-columns: repeat(2, 1fr); }
+      .insta-header { flex-direction: column; align-items: flex-start; }
+
+      .contact-links { flex-direction: column; align-items: center; }
+      .contact-btn { width: 100%; max-width: 280px; justify-content: center; }
+
+      .footer-inner { flex-direction: column; text-align: center; gap: 12px; }
+    }
+
+    @media (max-width: 380px) {
+      .about-stats { grid-template-columns: 1fr; }
+      .hero-logo { height: 120px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- НАВІГАЦІЯ -->
+  <nav class="nav">
+    <div class="container">
+      <div class="nav-inner">
+        <img src="logo.png" alt="ДНК" class="nav-logo-img" />
+        <ul class="nav-links">
+          <li><a href="#directions">Рубрики</a></li>
+          <li><a href="#about">Про нас</a></li>
+          <li><a href="#instagram">Instagram</a></li>
+          <li><a href="#contact">Контакт</a></li>
+        </ul>
+        <button class="burger" onclick="toggleMenu()" aria-label="Меню">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="#directions" onclick="toggleMenu()">Рубрики</a>
+        <a href="#about" onclick="toggleMenu()">Про нас</a>
+        <a href="#instagram" onclick="toggleMenu()">Instagram</a>
+        <a href="#contact" onclick="toggleMenu()">Контакт</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <p class="hero-rubric">Журнал про українську культуру</p>
+        <img src="logo_2.png" alt="ДНК" class="hero-logo" />
+        <p class="hero-desc">
+          ДНК — медіа про українську культуру для покоління, яке її творить. Кіно, книги, музика, люди, локації, традиції.
+        </p>
+        <div class="hero-actions">
+          <a href="#directions" class="btn-filled">Читати журнал</a>
+          <a href="https://www.instagram.com/dnk.journal/" target="_blank" class="btn-outline">Instagram →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- РОЗДІЛЮВАЧ -->
+  <div class="container">
+    <div class="divider"><span class="divider-star">✦</span></div>
+  </div>
+
+  <!-- РУБРИКИ -->
+  <section class="section" id="directions">
+    <div class="container">
+      <div class="section-num">01/ Рубрики</div>
+      <h2 class="section-title">Шість редакційних рубрик</h2>
+      <div class="directions-grid">
+        <div class="direction-item">
+          <div class="direction-num">01/</div>
+          <div class="direction-name">Кіно</div>
+          <div class="direction-rubric">Film</div>
+          <div class="direction-desc">Українське кіно, фестивалі, рецензії та розмови з режисерами</div>
+        </div>
+        <div class="direction-item">
+          <div class="direction-num">02/</div>
+          <div class="direction-name">Книги</div>
+          <div class="direction-rubric">Books</div>
+          <div class="direction-desc">Сучасна українська та перекладна література, рекомендації та огляди</div>
+        </div>
+        <div class="direction-item">
+          <div class="direction-num">03/</div>
+          <div class="direction-name">Люди</div>
+          <div class="direction-rubric">People</div>
+          <div class="direction-desc">Інтерв'ю з тими, хто формує культурний простір сьогодні</div>
+        </div>
+        <div class="direction-item">
+          <div class="direction-num">04/</div>
+          <div class="direction-name">Локації</div>
+          <div class="direction-rubric">Locations</div>
+          <div class="direction-desc">Місця, що мають значення — від Карпат до підземель Києва</div>
+        </div>
+        <div class="direction-item">
+          <div class="direction-num">05/</div>
+          <div class="direction-name">Музика</div>
+          <div class="direction-rubric">Music</div>
+          <div class="direction-desc">Незалежна сцена, нові альбоми, живі концерти і їх контекст</div>
+        </div>
+        <div class="direction-item">
+          <div class="direction-num">06/</div>
+          <div class="direction-name">Традиції</div>
+          <div class="direction-rubric">Traditions</div>
+          <div class="direction-desc">Вишивка, ремесла, обряди — спадщина як жива матерія</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- РОЗДІЛЮВАЧ -->
+  <div class="container">
+    <div class="divider"><span class="divider-star">✦</span></div>
+  </div>
+
+  <!-- ПРО НАС -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div>
+          <div class="section-num">02/ Про нас</div>
+          <h2 class="about-title">Медіа для тих, хто <span class="accent">живе</span> культурою</h2>
+          <p class="about-text">
+            ДНК — незалежний культурний журнал, заснований у 2023 році. Ми пишемо про українську культуру без ностальгії та без дидактики — як про живу, складну, іноді суперечливу річ.
+          </p>
+          <p class="about-text">
+            Наша аудиторія — люди, які читають, дивляться, слухають і запитують. Ті, для кого культурна ідентичність — не архів, а інструмент.
+          </p>
+        </div>
+        <div class="about-stats">
+          <div class="stat-box">
+            <div class="stat-num">10K+</div>
+            <div class="stat-label">підписників в Instagram</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">3</div>
+            <div class="stat-label">роки в медіапросторі</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">6</div>
+            <div class="stat-label">редакційних напрямів</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">∞</div>
+            <div class="stat-label">любові до української культури</div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="founders-title">Засновниці</h2>
+      <div class="founders-grid">
+        <a href="https://www.instagram.com/iva.danylenko/" target="_blank" class="founder-card">
+          <div class="founder-photo">
+            <img src="images/founder1.jpg" alt="Іванна Даниленко" />
+          </div>
+          <div class="founder-info">
+            <div class="founder-name">Іванна Даниленко</div>
+            <div class="founder-role">Директорка з розвитку</div>
+            <div class="founder-desc">відповідає за розвиток журналу, маркетинг, дизайн та співпраці</div>
+          </div>
+        </a>
+        <a href="https://www.instagram.com/irynakolessnik/" target="_blank" class="founder-card">
+          <div class="founder-photo">
+            <img src="images/founder2.jpg" alt="Ірина Колеснік" />
+          </div>
+          <div class="founder-info">
+            <div class="founder-name">Ірина Колеснік</div>
+            <div class="founder-role">Головна редакторка</div>
+            <div class="founder-desc">відповідає за контент, редакційну політику та стандарти якості</div>
+          </div>
+        </a>
+        <a href="https://www.instagram.com/taya.bilan/" target="_blank" class="founder-card">
+          <div class="founder-photo">
+            <img src="images/founder3.jpg" alt="Таісія Білан" />
+          </div>
+          <div class="founder-info">
+            <div class="founder-name">Таісія Білан</div>
+            <div class="founder-role">Операційна директорка</div>
+            <div class="founder-desc">відповідає за виробництво контенту та організацію команди</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- РОЗДІЛЮВАЧ -->
+  <div class="container">
+    <div class="divider"><span class="divider-star">✦</span></div>
+  </div>
+
+  <!-- INSTAGRAM -->
+  <section class="section" id="instagram">
+    <div class="container">
+      <div class="insta-header">
+        <div>
+          <div class="section-num">03/ Соцмережі</div>
+          <h2 class="section-title" style="margin-bottom:0">Instagram</h2>
+        </div>
+        <a href="https://www.instagram.com/dnk.journal/" target="_blank" class="btn-outline">@dnk.journal →</a>
+      </div>
+      <div class="instagram-grid">
+        <a href="https://www.instagram.com/p/DYXFwuhjF0q/" target="_blank">
+          <img src="images/post1.jpg" alt="Пост 1" />
+        </a>
+        <a href="https://www.instagram.com/p/DW6YP56DJD5/" target="_blank">
+          <img src="images/post2.jpg" alt="Пост 2" />
+        </a>
+        <a href="https://www.instagram.com/p/DT5qTA0DGcO/" target="_blank">
+          <img src="images/post3.jpg" alt="Пост 3" />
+        </a>
+        <a href="https://www.instagram.com/p/DQ67pogDJCj/" target="_blank">
+          <img src="images/post4.jpg" alt="Пост 4" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- КОНТАКТ -->
+  <section class="contact-section" id="contact">
+    <div class="container">
+      <div class="contact-inner">
+        <h2 class="contact-title">Пишіть нам,<br>розмовляймо</h2>
+        <p class="contact-rubric">Співпраця · Реклама · Матеріали</p>
+        <div class="contact-links">
+          <a href="mailto:dnk.journal@gmail.com" class="contact-btn">✉ Email</a>
+          <a href="https://www.instagram.com/dnk.journal/" target="_blank" class="contact-btn">◈ Instagram</a>
+          <a href="https://drive.google.com/file/d/1YQa1Ad2PJ4Czb2yoWmVKeY8VOmhbF9ZY/view" target="_blank" class="contact-btn">↗ Медіакіт</a>
+          <a href="https://www.instagram.com/dnk.spivpratsia/" target="_blank" class="contact-btn">◈ Співпраці</a>
+          <a href="https://www.tiktok.com/@dnk.journal" target="_blank" class="contact-btn">♪ TikTok</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ФУТЕР -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <img src="logo_2.png" alt="ДНК" class="footer-logo-img" />
+        <span class="footer-copy">© 2026 ДНК. Культурний журнал.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+  </script>
+
+</body>
+</html>
